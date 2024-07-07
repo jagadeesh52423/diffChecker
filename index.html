@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diff Checker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Diff Checker</h1>
+        <div class="input-section">
+            <textarea id="original" placeholder="Original Text"></textarea>
+            <textarea id="updated" placeholder="Updated Text"></textarea>
+        </div>
+        <div class="options">
+            <label>
+                <input type="radio" name="comparison" value="character" checked> Character
+            </label>
+            <label>
+                <input type="radio" name="comparison" value="word"> Word
+            </label>
+            <button id="compare">Compare</button>
+        </div>
+        <div id="result" class="result-container"></div>
+    </div>
+    <script src="diffChecker.js"></script>
+</body>
+</html>
