@@ -31,8 +31,15 @@ h1 {
     margin-bottom: 20px;
 }
 
-textarea {
+.text-area {
     width: 48%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+textarea {
+    width: 100%;
     height: 200px;
     margin: 10px 0;
     padding: 10px;
@@ -41,6 +48,10 @@ textarea {
     border-radius: 5px;
     resize: vertical;
     overflow: auto;
+}
+
+input[type="file"] {
+    margin: 10px 0;
 }
 
 .options {

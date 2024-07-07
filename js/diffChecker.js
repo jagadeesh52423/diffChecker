@@ -5,7 +5,6 @@ class DiffChecker {
 
     splitIntoDoubleDimensionalArray(data, splitBy) {
         const lines = data.split('\n');
-        console.log("Split lines:", lines);
         return lines.map(line => {
             if (splitBy === "character") {
                 return line.split('');
@@ -25,9 +24,10 @@ class DiffChecker {
     findLCS(text1, text2) {
         const m = text1.length;
         const n = text2.length;
-        const key = this.hashStringArray(text1) + '|' + this.hashStringArray(text2);
+        const key = this.hashStringArray(text1) + '<><|><>' + this.hashStringArray(text2);
 
         if (this.memo[key]) {
+            console.log("Memoized value found.", this.memo[key], "for key:", key);
             return this.memo[key];
         }
 
@@ -53,14 +53,14 @@ class DiffChecker {
 
         for (let i = 1; i <= m; i++) {
             for (let j = 1; j <= n; j++) {
+                console.log(data1[i - 1], data2[j - 1]);
                 const innerDp = this.findLCS(data1[i - 1], data2[j - 1]);
+                console.log("innerDp: ", innerDp);
                 const comparisonValue = innerDp[data1[i - 1].length][data2[j - 1].length];
                 dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1] + comparisonValue);
             }
-            console.log(`DP table after processing line ${i}:`, dp[i]);
         }
 
-        console.log("Final LCS Lines DP table:", dp);
         return dp;
     }
 
@@ -88,8 +88,6 @@ class DiffChecker {
             }
         }
 
-        console.log("Matching segments for original data:", matchingSegments1);
-        console.log("Matching segments for updated data:", matchingSegments2);
         return { matchingSegments1, matchingSegments2 };
     }
 
@@ -111,8 +109,7 @@ class DiffChecker {
                 j--;
             }
         }
-        console.log("Matching lines for original data:", matchingLines1);
-        console.log("Matching lines for updated data:", matchingLines2);
+
         return { matchingLines1, matchingLines2 };
     }
 
@@ -129,9 +126,6 @@ class DiffChecker {
         const comparisonType = document.querySelector('input[name="comparison"]:checked').value;
         const originalData = this.splitIntoDoubleDimensionalArray(originalText, comparisonType);
         const updatedData = this.splitIntoDoubleDimensionalArray(updatedText, comparisonType);
-
-        console.log("Original data:", originalData);
-        console.log("Updated data:", updatedData);
 
         const { matchingLines1, matchingLines2, matchingSegments1, matchingSegments2, dp } = this.diffChecker(originalData, updatedData);
         const resultConditions = this.processArrays(matchingLines1, matchingLines2);
@@ -173,7 +167,6 @@ class DiffChecker {
             j++;
         }
 
-        console.log("Result conditions:", result);
         return result;
     }
 
@@ -187,8 +180,6 @@ class DiffChecker {
             lineResult.style.whiteSpace = 'pre'; // Ensure whitespace is preserved
             let currentStatus = '';
             let currentString = '';
-
-            console.log(`Processing condition: ${status}, origIndex: ${origIndex}, updIndex: ${updIndex}`);
 
             if (status === 'match') {
                 if (originalData[origIndex].length === 0 && updatedData[updIndex].length === 0) {
@@ -285,7 +276,3 @@ class DiffChecker {
                   .replace(/'/g, '&#039;');
     }
 }
-
-const diffChecker = new DiffChecker();
-
-document.getElementById('compare').addEventListener('click', () => diffChecker.compareTexts());

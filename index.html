@@ -4,14 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diff Checker</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container">
         <h1>Diff Checker</h1>
         <div class="input-section">
-            <textarea id="original" placeholder="Original Text"></textarea>
-            <textarea id="updated" placeholder="Updated Text"></textarea>
+            <div class="text-area">
+                <textarea id="original" placeholder="Original Text"></textarea>
+                <input type="file" id="originalFile" accept=".txt">
+            </div>
+            <div class="text-area">
+                <textarea id="updated" placeholder="Updated Text"></textarea>
+                <input type="file" id="updatedFile" accept=".txt">
+            </div>
         </div>
         <div class="options">
             <label>
@@ -24,6 +30,8 @@
         </div>
         <div id="result" class="result-container"></div>
     </div>
-    <script src="diffChecker.js"></script>
+    <script src="js/diffChecker.js"></script>
+    <script src="js/fileHandler.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
