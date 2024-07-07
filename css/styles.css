@@ -97,10 +97,14 @@ button:hover {
 
 .removed {
     background-color: #ffcccc;
+    display: block;
+    width: 100%;
 }
 
 .added {
     background-color: #ccffcc;
+    display: block;
+    width: 100%;
 }
 
 .empty-line-removed {
@@ -124,10 +128,13 @@ button:hover {
 .match {
     color: black;
     background-color: white;
+    display: block;
+    width: 100%;
 }
 
 .empty-line {
     display: block;
     margin: 5px 0;
     padding: 2px 5px;
+    width: 100%;
 }
