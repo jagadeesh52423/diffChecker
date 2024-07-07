@@ -20,15 +20,19 @@
             </div>
         </div>
         <div class="options">
-            <label>
-                <input type="radio" name="comparison" value="character" checked> Character
-            </label>
-            <label>
-                <input type="radio" name="comparison" value="word"> Word
-            </label>
+            <label for="comparisonType">Comparison Type:</label>
+            <select id="comparisonType">
+                <option value="character">Character</option>
+                <option value="word">Word</option>
+                <option value="line">Line</option>
+            </select>
             <button id="compare">Compare</button>
         </div>
-        <div id="result" class="result-container"></div>
+        <div class="result-container" id="result-container">
+            <div id="result-left" class="result-view"></div>
+            <div id="result-right" class="result-view"></div>
+            <div id="result-single" class="result-view single-view"></div>
+        </div>
     </div>
     <script src="js/diffChecker.js"></script>
     <script src="js/fileHandler.js"></script>

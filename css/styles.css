@@ -74,13 +74,25 @@ button:hover {
 }
 
 .result-container {
-    padding: 20px;
-    white-space: pre-wrap;
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.result-view {
+    width: 48%;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f7f7f7;
     max-height: 300px;
     overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+.single-view {
+    width: 100%;
 }
 
 .removed {
