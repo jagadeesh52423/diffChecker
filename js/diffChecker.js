@@ -22,10 +22,18 @@ class DiffChecker {
         const lines = data.split('\n');
         return lines.map(line => {
             if (splitBy === "character") {
-                return line.split('');
+                if (line === "") {
+                    return [""];
+                } else {
+                    return line.split('');
+                }
             } else if (splitBy === "word") {
-                const regex = /([a-zA-Z0-9]+|\s|[^\w\s])/g;
-                return line.match(regex) || [];
+                if (line === "") {
+                    return [""];
+                } else {
+                    const regex = /([a-zA-Z0-9]+|\s|[^\w\s])/g;
+                    return line.match(regex) || [];
+                }
             } else if (splitBy === "line") {
                 return [line];  // Each line is an entry
             } else {
@@ -185,6 +193,13 @@ class DiffChecker {
         return result;
     }
 
+    createSpanElement(text, className) {
+        if (text === "") {
+            text = "\n";
+        }
+        return `<span class="${className}">${text}</span>`;
+    }
+
     displayResult(originalData, updatedData, matchingSegments1, matchingSegments2, resultConditions, comparisonType) {
         const resultContainer = document.getElementById('result-container');
         const resultLeftDiv = document.getElementById('result-left');
@@ -212,21 +227,19 @@ class DiffChecker {
                     lineResultLeft.innerHTML = `<span class="match">${this.escapeHTML(segment)}</span>`;
                     lineResultRight.innerHTML = `<span class="match">${this.escapeHTML(segment)}</span>`;
                 } else if (status === 'remove' && origIndex !== -1) {
-                    const segment = originalData[origIndex].join('');
-                    lineResultRight.innerHTML = `<span class="match">\n</span>`; // Empty space for alignment
-                    if (originalData[origIndex].length === 0) {
-                        lineResultLeft.innerHTML = `<span class="removed">\n</span>`;
-                    } else {
-                        lineResultLeft.innerHTML = `<span class="removed">${this.escapeHTML(segment)}</span>`;
+                    let segment = originalData[origIndex].join('');
+                    lineResultRight.innerHTML = `<span class=\"match\">\n</span>`; // Empty space for alignment
+                    if (segment === "") {
+                        segment = "\n";
                     }
+                    lineResultLeft.innerHTML = `<span class="removed">${this.escapeHTML(segment)}</span>`;
                 } else if (status === 'added' && updIndex !== -1) {
-                    const segment = updatedData[updIndex].join('');
-                    lineResultLeft.innerHTML = `<span class="match">\n</span>`; // Empty space for alignment
-                    if (updatedData[updIndex].length === 0) {
-                        lineResultRight.innerHTML = `<span class="added">\n</span>`;
-                    } else {
-                        lineResultRight.innerHTML = `<span class="added">${this.escapeHTML(segment)}</span>`;
+                    let segment = updatedData[updIndex].join('');
+                    lineResultLeft.innerHTML = `<span class=\"match\">\n</span>`; // Empty space for alignment
+                    if (segment === "") {
+                        segment = "\n";
                     }
+                    lineResultRight.innerHTML = `<span class="added">${this.escapeHTML(segment)}</span>`;
                 }
 
                 resultLeftDiv.appendChild(lineResultLeft);
@@ -261,7 +274,7 @@ class DiffChecker {
 
                             if (currentStatus !== 'match') {
                                 if (currentString) {
-                                    lineResult.innerHTML += `<span class="${currentStatus}">${this.escapeHTML(currentString)}</span>`;
+                                    lineResult.innerHTML += this.createSpanElement(currentString, currentStatus);
                                 }
                                 currentStatus = 'match';
                                 currentString = '';
@@ -273,7 +286,7 @@ class DiffChecker {
                         } else if (originalIndex < originalData[origIndex].length && (updatedIndex >= updatedData[updIndex].length || originalData[origIndex][originalIndex] !== matchingSegments1[origIndex][lcsIndex])) {
                             if (currentStatus !== 'removed') {
                                 if (currentString) {
-                                    lineResult.innerHTML += `<span class="${currentStatus}">${this.escapeHTML(currentString)}</span>`;
+                                    lineResult.innerHTML += this.createSpanElement(currentString, currentStatus);
                                 }
                                 currentStatus = 'removed';
                                 currentString = '';
@@ -283,7 +296,7 @@ class DiffChecker {
                         } else if (updatedIndex < updatedData[updIndex].length) {
                             if (currentStatus !== 'added') {
                                 if (currentString) {
-                                    lineResult.innerHTML += `<span class="${currentStatus}">${this.escapeHTML(currentString)}</span>`;
+                                    lineResult.innerHTML += this.createSpanElement(currentString, currentStatus);
                                 }
                                 currentStatus = 'added';
                                 currentString = '';
@@ -294,22 +307,14 @@ class DiffChecker {
                     }
 
                     if (currentString) {
-                        lineResult.innerHTML += `<span class="${currentStatus}">${this.escapeHTML(currentString)}</span>`;
+                        lineResult.innerHTML += this.createSpanElement(currentString, currentStatus);
                     }
                 } else if (status === 'remove' && origIndex !== -1) {
-                    if (originalData[origIndex].length === 0) {
-                        lineResult.innerHTML = `<span class="removed">\n</span>`;
-                    } else {
-                        const segment = originalData[origIndex].join('');
-                        lineResult.innerHTML = `<span class="removed">${this.escapeHTML(segment)}</span>`;
-                    }
+                    const segment = originalData[origIndex].join('');
+                    lineResult.innerHTML = this.createSpanElement(segment, 'removed');
                 } else if (status === 'added' && updIndex !== -1) {
-                    if (updatedData[updIndex].length === 0) {
-                        lineResult.innerHTML = `<span class="added">\n</span>`;
-                    } else {
-                        const segment = updatedData[updIndex].join('');
-                        lineResult.innerHTML = `<span class="added">${this.escapeHTML(segment)}</span>`;
-                    }
+                    const segment = updatedData[updIndex].join('');
+                    lineResult.innerHTML = this.createSpanElement(segment, 'added');
                 }
 
                 resultSingleDiv.appendChild(lineResult);

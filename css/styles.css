@@ -107,27 +107,9 @@ button:hover {
     width: 100%;
 }
 
-.empty-line-removed {
-    color: #800000;
-    background-color: #ffe6e6;
-    display: block;
-    margin: 5px 0;
-    padding: 2px 5px;
-    border: 1px dashed #800000;
-}
-
-.empty-line-added {
-    color: #006400;
-    background-color: #e6ffe6;
-    display: block;
-    margin: 5px 0;
-    padding: 2px 5px;
-    border: 1px dashed #006400;
-}
-
 .match {
     color: black;
-    background-color: white;
+    /* background-color: white; */
     display: block;
     width: 100%;
 }
