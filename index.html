@@ -11,11 +11,18 @@
         <h1>Diff Checker</h1>
         <div class="input-section">
             <div class="text-area">
-                <textarea id="original" placeholder="Original Text"></textarea>
+                <textarea id="original" placeholder="Original Text">This is the original text.
+It contains multiple lines.
+Each line will be compared to the updated text.
+
+Let's see how it handles changes.</textarea>
                 <input type="file" id="originalFile" accept=".txt">
             </div>
             <div class="text-area">
-                <textarea id="updated" placeholder="Updated Text"></textarea>
+                <textarea id="updated" placeholder="Updated Text">This is the updated text.
+It also contains multiple lines.
+Each line will be checked against the original text.
+Let's observe how it detects changes.</textarea>
                 <input type="file" id="updatedFile" accept=".txt">
             </div>
         </div>
@@ -24,14 +31,18 @@
             <select id="comparisonType">
                 <option value="character">Character</option>
                 <option value="word">Word</option>
-                <option value="line">Line</option>
             </select>
             <button id="compare">Compare</button>
         </div>
         <div class="result-container" id="result-container">
-            <div id="result-left" class="result-view"></div>
-            <div id="result-right" class="result-view"></div>
-            <div id="result-single" class="result-view single-view"></div>
+            <div id="result-left-container" class="result-container-inner">
+                <div id="line-numbers-left" class="line-numbers"></div>
+                <div id="result-left" class="result-view"></div>
+            </div>
+            <div id="result-right-container" class="result-container-inner">
+                <div id="line-numbers-right" class="line-numbers"></div>
+                <div id="result-right" class="result-view"></div>
+            </div>
         </div>
     </div>
     <script src="js/diffChecker.js"></script>
