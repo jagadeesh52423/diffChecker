@@ -83,6 +83,11 @@ button:hover {
     width: 48%;
 }
 
+#result-center-container {
+    width: 100%; /* Full width for center container */
+    display: none; /* Hide by default */
+}
+
 .line-numbers {
     padding: 10px;
     border: 1px solid #ccc;

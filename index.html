@@ -32,6 +32,13 @@ Let's observe how it detects changes.</textarea>
                 <option value="character">Character</option>
                 <option value="word">Word</option>
             </select>
+            
+            <label for="windowType">Window Type:</label>
+            <select id="windowType">
+                <option value="SplitWindow">SplitWindow</option>
+                <option value="CombinedWindow">CombinedWindow</option>
+            </select>
+            
             <button id="compare">Compare</button>
         </div>
         <div class="result-container" id="result-container">
@@ -43,10 +50,14 @@ Let's observe how it detects changes.</textarea>
                 <div id="line-numbers-right" class="line-numbers"></div>
                 <div id="result-right" class="result-view"></div>
             </div>
+            <div id="result-center-container" class="result-container-inner" style="display: none;">
+                <div id="line-numbers-center" class="line-numbers"></div>
+                <div id="result-center" class="result-view"></div>
+            </div>
         </div>
     </div>
-    <script src="js/diffChecker.js"></script>
     <script src="js/fileHandler.js"></script>
+    <script src="js/diffChecker.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

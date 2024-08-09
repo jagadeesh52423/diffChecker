@@ -239,13 +239,17 @@ class DiffChecker {
         return { matchingLines1, matchingLines2, originalData, updatedData };
     }
 
-    processArrays(arr1, arr2) {
+    processArrays(arr1, arr2, type) {
         let resultIndexes = [];
         let i = 0, j = 0;
 
         while (i < arr1.length && j < arr2.length) {
             if (arr2[arr1[i]] === i && arr1[arr2[j]] === j) {
                 resultIndexes.push(['match', i, arr1[i]]);
+                i++;
+                j++;
+            } else if (arr1[i] === -1 && arr2[j] === -1 && type === 'line') {
+                resultIndexes.push(['match', i, j]);
                 i++;
                 j++;
             } else if (arr1[i] === -1) {
@@ -274,15 +278,21 @@ class DiffChecker {
 
     displayResult(originalData, updatedData, matchingLines1, matchingLines2, windowType) {
         let resultWindow;
+        let container, lineNumbersContainer;
+
         if (windowType === 'SplitWindow') {
             resultWindow = new SplitWindow();
+            container = [document.getElementById('result-left'), document.getElementById('result-right')];
+            lineNumbersContainer = [document.getElementById('line-numbers-left'), document.getElementById('line-numbers-right')];
         } else if (windowType === 'CombinedWindow') {
             resultWindow = new CombinedWindow();
+            container = [document.getElementById('result-center')];
+            lineNumbersContainer = [document.getElementById('line-numbers-center')];
         } else {
             throw new Error("Invalid windowType. Use 'SplitWindow' or 'CombinedWindow'.");
         }
 
-        const resultConditions = this.processArrays(matchingLines1, matchingLines2);
+        const resultConditions = this.processArrays(matchingLines1, matchingLines2, 'line');
 
         resultConditions.forEach(([status, origIndex, updIndex]) => {
             console.log(status, origIndex, updIndex);
@@ -291,7 +301,7 @@ class DiffChecker {
                 const updatedLine = updatedData[updIndex];
                 const innerDp = this.findLCS(originalLine, updatedLine);
                 const { matchingLines1: innerMatchingLines1, matchingLines2: innerMatchingLines2 } = this.traceBackLCS(originalLine, updatedLine, innerDp);
-                const innerResults = this.processArrays(innerMatchingLines1, innerMatchingLines2);
+                const innerResults = this.processArrays(innerMatchingLines1, innerMatchingLines2, 'character|word');
 
                 innerResults.forEach(([innerStatus, innerOrigIndex, innerUpdIndex]) => {
                     const originalPart = innerOrigIndex !== -1 ? originalLine[innerOrigIndex] : '';
@@ -318,13 +328,13 @@ class DiffChecker {
             }
         });
 
-        const leftContainer = document.getElementById('result-left');
-        const rightContainer = document.getElementById('result-right');
-        const leftLineNumbersContainer = document.getElementById('line-numbers-left');
-        const rightLineNumbersContainer = document.getElementById('line-numbers-right');
-        this.syncScroll([leftContainer, rightContainer, leftLineNumbersContainer, rightLineNumbersContainer]);
-        resultWindow.render(leftContainer, rightContainer, leftLineNumbersContainer, rightLineNumbersContainer);
+        if (windowType === 'SplitWindow') {
+            resultWindow.render(container[0], container[1], lineNumbersContainer[0], lineNumbersContainer[1]);
+        } else if (windowType === 'CombinedWindow') {
+            resultWindow.render(container[0], lineNumbersContainer[0]);
+        }
     }
+
 
     syncScroll(divs) {
         const onScroll = (scrolledDiv) => {
