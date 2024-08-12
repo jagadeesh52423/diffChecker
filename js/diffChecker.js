@@ -204,7 +204,7 @@ class DiffChecker {
                 const regex = /([a-zA-Z0-9]+|\s|[^\w\s])/g;
                 return line.match(regex) || [];
             } else if (splitBy === "line") {
-                return line === "" ? [""] : [line];  // Each line is an entry
+                return line === "" ? [""] : [line];  // Each line is an entry as a whole
             } else {
                 throw new Error("Invalid splitBy criterion. Use 'character', 'word', or 'line'.");
             }
