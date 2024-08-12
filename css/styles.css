@@ -91,8 +91,7 @@ button:hover {
 .line-numbers {
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f7f7f7;
+    background-color: white; /* Set the same white background */
     max-height: 300px;
     overflow-y: auto;
     white-space: pre-wrap;
@@ -100,13 +99,13 @@ button:hover {
     color: gray;
     padding-right: 10px;
     width: 60px;
+    border-radius: 0; /* Remove border-radius */
 }
 
 .result-view {
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f7f7f7;
+    background-color: white;  /* Default background color set to white */
     max-height: 300px;
     overflow-y: auto;
     white-space: pre;
@@ -114,16 +113,29 @@ button:hover {
     word-wrap: normal;
     overflow-x: scroll;
     flex-grow: 1;
+    border-radius: 0; /* Remove border-radius */
 }
 
-.removed {
-    background-color: #ef9b9b;
-    display: inline-block;
+.line-added-removed {
+    background-color: rgb(218, 247, 249);
+}
+
+.line-added-matched {
+    background-color: lightgreen;
+}
+
+.line-removed-matched {
+    background-color: #ffcccc; /* Light red */
 }
 
 .added {
-    background-color: #65d765;
-    display: inline-block;
+    background-color: green; /* Darker green for added text */
+    color: white;
+}
+
+.removed {
+    background-color: rgb(178, 12, 12); /* Darker red for removed text */
+    color: white;
 }
 
 .match {
@@ -132,35 +144,10 @@ button:hover {
 }
 
 .empty-line {
-    display: block;
-    margin: 5px 0;
-    padding: 2px 5px;
-    width: 100%;
-}
-
-.removed-part {
-    background-color: darkred;
-    color: white;
-}
-
-.added-part {
-    background-color: darkgreen;
-    color: white;
-}
-
-.removed-mixed {
-    background-color: lightcoral;
-}
-
-.added-mixed {
-    background-color: lightgreen;
-}
-
-.empty-line {
     color: gray;
     font-style: italic;
-    line-height: 1;   /* Normalize line height */
-    padding: 0;       /* Remove any padding */
-    margin: 0;        /* Remove any margin */
+    line-height: 1;
+    padding: 0;
+    margin: 0;
     display: inline-block;
 }

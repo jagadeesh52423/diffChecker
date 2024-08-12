@@ -2,41 +2,70 @@ class Line {
     constructor(type = 'content') {
         this.parts = [];
         this.type = type;
+        this.hasAdded = false;
+        this.hasRemoved = false;
+        this.hasMatched = false;
     }
 
     addPart(text, className) {
         this.parts.push({ text, className });
+        switch (className) {
+            case 'removed':
+                this.hasRemoved = true;
+                break;
+            case 'added':
+                this.hasAdded = true;
+                break;
+            case 'match':
+                this.hasMatched = true;
+                break;
+            default:
+                break;
+        }
     }
 
     render(container) {
         const lineDiv = document.createElement('div');
-        if (this.parts.length === 0) {
+        
+        this.parts.forEach(part => {
             const span = document.createElement('span');
-            span.innerText = ' ';
+            span.className = part.className;
+            span.innerText = part.text;
             lineDiv.appendChild(span);
-        } else {
-            this.parts.forEach(part => {
-                const span = document.createElement('span');
-                span.className = part.className;
-                span.innerText = part.text;
-                lineDiv.appendChild(span);
-            });
-            if (this.parts.length === 1 && lineDiv.innerText === '' && this.type === 'content' && this.parts[0].className !== 'match') {
-                lineDiv.removeChild(lineDiv.firstChild);
-                const span = document.createElement('span');
-                span.innerText = '\u00A0';
-                span.className = 'empty-line ' + this.parts[0].className;
-                lineDiv.appendChild(span);
-            }
-            console.log(lineDiv.innerText);
+        });
+
+        if (lineDiv.innerText === '' && this.type === 'content') {
+            // lineDiv.removeChild(lineDiv.firstChild);
+            const br = document.createElement('br');
+            lineDiv.appendChild(br);  // Insert a <br> tag for empty lines
         }
+        
+        const backgroundClass = this.determineBackgroundClass();
+        if (backgroundClass) {
+            lineDiv.classList.add(backgroundClass);
+        }
+
         container.appendChild(lineDiv);
     }
 
     hasContent() {
         return this.parts.some(part => part.text !== '');
     }
+
+    determineBackgroundClass() {
+        if (this.hasAdded && this.hasRemoved) {
+            return 'line-added-removed';
+        } else if (this.hasAdded) {
+            return 'line-added-matched';
+        } else if (this.hasRemoved) {
+            return 'line-removed-matched';
+        } else {
+            return ''; // Default, no special background
+        }
+    }
 }
+
+
 
 class SplitWindow {
     constructor() {
