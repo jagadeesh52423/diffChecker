@@ -1,6 +1,7 @@
 class Line {
-    constructor() {
+    constructor(type = 'content') {
         this.parts = [];
+        this.type = type;
     }
 
     addPart(text, className) {
@@ -9,12 +10,26 @@ class Line {
 
     render(container) {
         const lineDiv = document.createElement('div');
-        this.parts.forEach(part => {
+        if (this.parts.length === 0) {
             const span = document.createElement('span');
-            span.className = part.className;
-            span.innerText = part.text;
+            span.innerText = ' ';
             lineDiv.appendChild(span);
-        });
+        } else {
+            this.parts.forEach(part => {
+                const span = document.createElement('span');
+                span.className = part.className;
+                span.innerText = part.text;
+                lineDiv.appendChild(span);
+            });
+            if (this.parts.length === 1 && lineDiv.innerText === '' && this.type === 'content' && this.parts[0].className !== 'match') {
+                lineDiv.removeChild(lineDiv.firstChild);
+                const span = document.createElement('span');
+                span.innerText = '\u00A0';
+                span.className = 'empty-line ' + this.parts[0].className;
+                lineDiv.appendChild(span);
+            }
+            console.log(lineDiv.innerText);
+        }
         container.appendChild(lineDiv);
     }
 
@@ -22,25 +37,30 @@ class Line {
         return this.parts.some(part => part.text !== '');
     }
 }
+
 class SplitWindow {
     constructor() {
         this.leftLines = [];
         this.rightLines = [];
         this.leftLineNumbers = [];
         this.rightLineNumbers = [];
-        this.currentLeftLine = new Line();
-        this.currentRightLine = new Line();
-        this.currentLeftLineNumber = new Line();
-        this.currentRightLineNumber = new Line();
         this.leftIndex = 0;
         this.rightIndex = 0;
+        this.backToDefault();
+    }
+    
+    backToDefault() {
+        this.currentLeftLine = new Line();
+        this.currentRightLine = new Line();
+        this.currentLeftLineNumber = new Line('line-number');
+        this.currentRightLineNumber = new Line('line-number');
         this.leftLineContentFound = false;
         this.rightLineContentFound = false;
     }
 
     addRemovedText(part) {
         this.currentLeftLine.addPart(part, 'removed');
-        this.currentRightLine.addPart('', 'match');
+        // this.currentRightLine.addPart('', 'match');
         this.leftLineContentFound = true;
     }
 
@@ -52,7 +72,7 @@ class SplitWindow {
     }
 
     addAddedText(part) {
-        this.currentLeftLine.addPart('', 'match');
+        // this.currentLeftLine.addPart('', 'match');
         this.currentRightLine.addPart(part, 'added');
         this.rightLineContentFound = true;
     }
@@ -78,12 +98,7 @@ class SplitWindow {
         this.leftLineNumbers.push(this.currentLeftLineNumber);
         this.rightLineNumbers.push(this.currentRightLineNumber);
 
-        this.currentLeftLine = new Line();
-        this.currentRightLine = new Line();
-        this.currentLeftLineNumber = new Line();
-        this.currentRightLineNumber = new Line();
-        this.leftLineContentFound = false;
-        this.rightLineContentFound = false;
+        this.backToDefault();
     }
 
     render(leftContainer, rightContainer, leftLineNumbersContainer, rightLineNumbersContainer) {
@@ -160,7 +175,7 @@ class DiffChecker {
                 const regex = /([a-zA-Z0-9]+|\s|[^\w\s])/g;
                 return line.match(regex) || [];
             } else if (splitBy === "line") {
-                return line === "" ? [] : [line];  // Each line is an entry
+                return line === "" ? [""] : [line];  // Each line is an entry
             } else {
                 throw new Error("Invalid splitBy criterion. Use 'character', 'word', or 'line'.");
             }
@@ -330,8 +345,10 @@ class DiffChecker {
 
         if (windowType === 'SplitWindow') {
             resultWindow.render(container[0], container[1], lineNumbersContainer[0], lineNumbersContainer[1]);
+            this.syncScroll([container[0], container[1], lineNumbersContainer[0], lineNumbersContainer[1]]);
         } else if (windowType === 'CombinedWindow') {
             resultWindow.render(container[0], lineNumbersContainer[0]);
+            this.syncScroll([container[0], lineNumbersContainer[0]]);
         }
     }
 

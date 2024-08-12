@@ -117,12 +117,12 @@ button:hover {
 }
 
 .removed {
-    background-color: #ffcccc;
+    background-color: #ef9b9b;
     display: inline-block;
 }
 
 .added {
-    background-color: #ccffcc;
+    background-color: #65d765;
     display: inline-block;
 }
 
@@ -154,4 +154,13 @@ button:hover {
 
 .added-mixed {
     background-color: lightgreen;
+}
+
+.empty-line {
+    color: gray;
+    font-style: italic;
+    line-height: 1;   /* Normalize line height */
+    padding: 0;       /* Remove any padding */
+    margin: 0;        /* Remove any margin */
+    display: inline-block;
 }
