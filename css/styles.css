@@ -32,6 +32,26 @@ h1 {
   font-size: 2.5em;
 }
 
+.input-section div {
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+}
+
+#load-original, #load-updated {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#load-original:hover, #load-updated:hover {
+    background-color: #e0e0e0;
+}
+
 .input-section {
   display: flex;
   justify-content: space-between;

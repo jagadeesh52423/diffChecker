@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Improved Diff Checker</title>
+    <title>Diff Checker</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -12,18 +12,23 @@
         <h1>Diff Checker</h1>
 
         <div class="input-section">
-            <div id="original-drop-zone" class="file-drop-zone">
-                <p>Drop original file here or click to upload</p>
-                <input type="file" id="originalFile" style="display: none;">
+            <div>
+                <div id="original-drop-zone" class="file-drop-zone">
+                    <p>Drop original file here or click to upload</p>
+                    <input type="file" id="originalFile" style="display: none;">
+                </div>
+                <textarea id="original" placeholder="Enter original text"></textarea>
+                <button id="load-original">Load Last Original File</button>
             </div>
-            <div id="updated-drop-zone" class="file-drop-zone">
-                <p>Drop updated file here or click to upload</p>
-                <input type="file" id="updatedFile" style="display: none;">
+            <div>
+                <div id="updated-drop-zone" class="file-drop-zone">
+                    <p>Drop updated file here or click to upload</p>
+                    <input type="file" id="updatedFile" style="display: none;">
+                </div>
+                <textarea id="updated" placeholder="Enter updated text"></textarea>
+                <button id="load-updated">Load Last Updated File</button>
             </div>
         </div>
-
-        <textarea id="original" placeholder="Enter original text"></textarea>
-        <textarea id="updated" placeholder="Enter updated text"></textarea>
 
         <div class="options">
             <div class="toggle-group" id="comparisonType">
@@ -32,8 +37,8 @@
                 <button class="toggle-button" data-value="line">Line</button>
             </div>
             <div class="toggle-group" id="windowType">
-                <button class="toggle-button active" data-value="CombinedWindow">Combined</button>
-                <button class="toggle-button" data-value="SplitWindow">Split</button>
+                <button class="toggle-button active" data-value="SplitWindow">Split</button>
+                <button class="toggle-button" data-value="CombinedWindow">Combined</button>
             </div>
             <button id="compare" class="compare-button">Compare</button>
         </div>
@@ -47,7 +52,7 @@
                 <div id="line-numbers-right" class="line-numbers"></div>
                 <div id="result-right" class="result-view"></div>
             </div>
-            <div id="result-center-container" class="result-container-inner">
+            <div id="result-center-container" class="result-container-inner" style="display: none;">
                 <div id="line-numbers-center" class="line-numbers"></div>
                 <div id="result-center" class="result-view"></div>
             </div>

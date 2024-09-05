@@ -1,6 +1,36 @@
 class DiffChecker {
     constructor() {
         this.memo = new Map();
+        this.initializeFileLoading();
+    }
+
+    initializeFileLoading() {
+        const originalLoadButton = document.getElementById('load-original');
+        const updatedLoadButton = document.getElementById('load-updated');
+
+        if (originalLoadButton) {
+            originalLoadButton.addEventListener('click', () => this.loadLastFile('original'));
+        }
+        if (updatedLoadButton) {
+            updatedLoadButton.addEventListener('click', () => this.loadLastFile('updated'));
+        }
+    }
+
+    saveLastFile(fileType, content) {
+        localStorage.setItem(`lastFile_${fileType}`, JSON.stringify(content));
+    }
+
+    loadLastFile(fileType) {
+        const content = localStorage.getItem(`lastFile_${fileType}`);
+        if (content) {
+            const parsedContent = JSON.parse(content);
+            const textarea = document.getElementById(fileType);
+            if (textarea) {
+                textarea.value = parsedContent.map(line => line.join('')).join('\n');
+            }
+        } else {
+            alert(`No previous ${fileType} file found.`);
+        }
     }
 
     splitIntoDoubleDimensionalArray(data, splitBy) {
@@ -135,6 +165,10 @@ class DiffChecker {
     }
 
     displayResult(originalData, updatedData, matchingLines1, matchingLines2, windowType) {
+        // Save the current files
+        this.saveLastFile('original', originalData);
+        this.saveLastFile('updated', updatedData);
+
         let resultWindow;
         let containers;
 
