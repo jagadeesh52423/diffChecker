@@ -1,8 +1,14 @@
+import DiffChecker from './DiffChecker.js';
+
 function initializeDiffChecker() {
+    const diffChecker = new DiffChecker();
     const compareButton = document.getElementById('compare');
     const comparisonTypeButtons = document.querySelectorAll('#comparisonType .toggle-button');
     const windowTypeButtons = document.querySelectorAll('#windowType .toggle-button');
     const darkModeToggle = document.getElementById('darkModeToggle');
+
+    // Initialize file loading
+    diffChecker.initializeFileLoading();
 
     // Event listeners for toggle buttons
     function setActiveButton(buttons, clickedButton) {
@@ -41,23 +47,21 @@ function initializeDiffChecker() {
 
         // Use setTimeout to allow the UI to update before starting the comparison
         setTimeout(() => {
-            const originalData = diffChecker.splitIntoDoubleDimensionalArray(originalText, comparisonType);
-            const updatedData = diffChecker.splitIntoDoubleDimensionalArray(updatedText, comparisonType);
+            const originalData = diffChecker.fileHandler.splitIntoDoubleDimensionalArray(originalText, comparisonType);
+            const updatedData = diffChecker.fileHandler.splitIntoDoubleDimensionalArray(updatedText, comparisonType);
             const { matchingLines1, matchingLines2 } = diffChecker.diffChecker(originalData, updatedData);
 
             if (windowType === 'SplitWindow') {
                 document.getElementById('result-left-container').style.display = 'flex';
                 document.getElementById('result-right-container').style.display = 'flex';
                 document.getElementById('result-center-container').style.display = 'none';
-
-                diffChecker.displayResult(originalData, updatedData, matchingLines1, matchingLines2, 'SplitWindow');
             } else if (windowType === 'CombinedWindow') {
                 document.getElementById('result-left-container').style.display = 'none';
                 document.getElementById('result-right-container').style.display = 'none';
                 document.getElementById('result-center-container').style.display = 'flex';
-
-                diffChecker.displayResult(originalData, updatedData, matchingLines1, matchingLines2, 'CombinedWindow');
             }
+
+            diffChecker.displayResult(originalData, updatedData, matchingLines1, matchingLines2, windowType);
 
             // Hide loading spinner
             document.querySelector('.loading-spinner').style.display = 'none';
