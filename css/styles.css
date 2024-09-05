@@ -125,16 +125,15 @@ textarea {
   justify-content: space-between;
 }
 
-.result-container-inner {
+.result-container-inner, #result-center-container {
   display: flex;
+  flex-direction: column;
   width: 48%;
   overflow-x: auto;
 }
 
 #result-center-container {
   width: 100%;
-  display: none;
-  overflow-x: auto;
 }
 
 .line-container {
@@ -164,6 +163,7 @@ textarea {
   padding: 10px;
   border: 1px solid #ccc;
   overflow-x: auto;
+  flex-grow: 1;
 }
 
 .line-added-removed,
@@ -240,6 +240,43 @@ textarea {
   100% { transform: rotate(360deg); }
 }
 
+.diff-counts {
+  order: -1;
+  margin-bottom: 10px;
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: 14px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.diff-counts span {
+  display: inline-block;
+  margin-right: 15px;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.count-deletions {
+  background-color: #ffcccc;
+  color: #cc0000;
+}
+
+.count-insertions {
+  background-color: #ccffcc;
+  color: #006600;
+}
+
+.count-matches {
+  background-color: #e6f3ff;
+  color: #0066cc;
+}
+
+.count-modifications {
+    background-color: #ffe6cc;
+    color: #cc6600;
+}
+
 /* Dark mode styles */
 body.dark-mode {
   --bg-color: #1e1e1e;
@@ -302,5 +339,14 @@ body.dark-mode .file-drop-zone:hover {
 
   .toggle-group {
     margin-bottom: 10px;
+  }
+
+  .diff-counts {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .diff-counts span {
+    margin-bottom: 5px;
   }
 }

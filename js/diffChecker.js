@@ -136,20 +136,28 @@ class DiffChecker {
 
     displayResult(originalData, updatedData, matchingLines1, matchingLines2, windowType) {
         let resultWindow;
-        let container;
+        let containers;
 
         if (windowType === 'SplitWindow') {
             resultWindow = new SplitWindow();
-            container = [document.getElementById('result-left'), document.getElementById('result-right')];
+            containers = {
+                left: document.getElementById('result-left-container'),
+                right: document.getElementById('result-right-container')
+            };
         } else if (windowType === 'CombinedWindow') {
             resultWindow = new CombinedWindow();
-            container = [document.getElementById('result-center')];
+            containers = {
+                center: document.getElementById('result-center-container')
+            };
         } else {
             throw new Error("Invalid windowType. Use 'SplitWindow' or 'CombinedWindow'.");
         }
 
         const resultConditions = this.processArrays(matchingLines1, matchingLines2, 'line');
 
+        // Calculate counts
+        let deletions = 0, insertions = 0, matches = 0, modifications = 0;
+        
         // Show loading spinner
         document.querySelector('.loading-spinner').style.display = 'flex';
 
@@ -168,29 +176,39 @@ class DiffChecker {
                     const innerDp = this.findLCS(originalLine, updatedLine);
                     const { matchingLines1: innerMatchingLines1, matchingLines2: innerMatchingLines2 } = this.traceBackLCS(originalLine, updatedLine, innerDp);
                     const innerResults = this.processArrays(innerMatchingLines1, innerMatchingLines2, 'character|word');
-
+                    
+                    let isFullMatch = true;
                     innerResults.forEach(([innerStatus, innerOrigIndex, innerUpdIndex]) => {
                         const originalPart = innerOrigIndex !== -1 ? originalLine[innerOrigIndex] : '';
                         const updatedPart = innerUpdIndex !== -1 ? updatedLine[innerUpdIndex] : '';
-
                         if (innerStatus === 'match') {
                             resultWindow.addMatchingText(originalPart);
                         } else if (innerStatus === 'remove') {
                             resultWindow.addRemovedText(originalPart);
+                            isFullMatch = false;
                         } else if (innerStatus === 'added') {
                             resultWindow.addAddedText(updatedPart);
+                            isFullMatch = false;
                         }
                     });
-
+                    
+                    if (isFullMatch) {
+                        matches++;
+                    } else {
+                        modifications++;
+                    }
+                    
                     resultWindow.closeLine();
                 } else if (status === 'remove') {
                     const originalLine = originalData[origIndex].join('');
                     resultWindow.addRemovedText(originalLine);
                     resultWindow.closeLine();
+                    deletions++;
                 } else if (status === 'added') {
                     const updatedLine = updatedData[updIndex].join('');
                     resultWindow.addAddedText(updatedLine);
                     resultWindow.closeLine();
+                    insertions++;
                 }
             }
 
@@ -201,11 +219,14 @@ class DiffChecker {
             } else {
                 // Rendering is complete
                 if (windowType === 'SplitWindow') {
-                    resultWindow.render(container[0], container[1]);
-                    this.syncScroll(container);
+                    this.displayCounts(containers.left, deletions, 0, matches, modifications);
+                    this.displayCounts(containers.right, 0, insertions, matches, modifications);
+                    resultWindow.render(containers.left.querySelector('.result-view'), containers.right.querySelector('.result-view'));
+                    this.syncScroll([containers.left, containers.right]);
                 } else if (windowType === 'CombinedWindow') {
-                    resultWindow.render(container[0]);
-                    this.syncScroll(container);
+                    this.displayCounts(containers.center, deletions, insertions, matches, modifications);
+                    resultWindow.render(containers.center.querySelector('.result-view'));
+                    this.syncScroll([containers.center]);
                 }
 
                 // Hide loading spinner
@@ -214,6 +235,33 @@ class DiffChecker {
         };
 
         requestAnimationFrame(processChunk);
+    }
+
+    displayCounts(container, deletions, insertions, matches, modifications) {
+        console.log(`Displaying counts for container:`, container); // Debug log
+
+        // Remove existing count divisions
+        const existingCounts = container.querySelectorAll('.diff-counts');
+        existingCounts.forEach(count => count.remove());
+
+        const countsDiv = document.createElement('div');
+        countsDiv.className = 'diff-counts';
+        
+        if (deletions > 0) {
+            countsDiv.innerHTML += `<span class="count-deletions">Deletions: ${deletions}</span>`;
+        }
+        if (insertions > 0) {
+            countsDiv.innerHTML += `<span class="count-insertions">Insertions: ${insertions}</span>`;
+        }
+        if (matches > 0) {
+            countsDiv.innerHTML += `<span class="count-matches">Matches: ${matches}</span>`;
+        }
+        if (modifications > 0) {
+            countsDiv.innerHTML += `<span class="count-modifications">Modifications: ${modifications}</span>`;
+        }
+
+        console.log(`Counts HTML:`, countsDiv.innerHTML); // Debug log
+        container.insertBefore(countsDiv, container.firstChild);
     }
 
     syncScroll(divs) {
@@ -360,9 +408,76 @@ class SplitWindow {
         let rightLineNumber = 1;
 
         for (let i = 0; i < this.leftLines.length; i++) {
-            this.leftLines[i].render(leftContainer, this.leftLines[i].hasMatched || this.leftLines[i].hasRemoved ? leftLineNumber++ : '');
-            this.rightLines[i].render(rightContainer, this.rightLines[i].hasMatched || this.rightLines[i].hasAdded ? rightLineNumber++ : '');
+            const leftLineHeight = this.renderLine(this.leftLines[i], leftContainer, leftLineNumber);
+            const rightLineHeight = this.renderLine(this.rightLines[i], rightContainer, rightLineNumber);
+            console.log(`Left line ${leftLineNumber} height: ${leftLineHeight}, Right line ${rightLineNumber} height: ${rightLineHeight}`); // Debug log
+
+            // Balance the lines
+            const heightDiff = Math.abs(leftLineHeight - rightLineHeight);
+            if (heightDiff > 0) {
+                const container = leftLineHeight < rightLineHeight ? leftContainer : rightContainer;
+                for (let j = 0; j < heightDiff; ) {
+                    let emptyLineHeight = this.renderEmptyLine(container);
+                    j += emptyLineHeight;
+                }
+            }
+
+            if (this.leftLines[i].hasMatched || this.leftLines[i].hasRemoved) leftLineNumber++;
+            if (this.rightLines[i].hasMatched || this.rightLines[i].hasAdded) rightLineNumber++;
         }
+    }
+
+    renderLine(line, container, lineNumber) {
+        const lineDiv = document.createElement('div');
+        lineDiv.className = 'line-container';
+
+        const lineNumberDiv = document.createElement('div');
+        lineNumberDiv.className = 'line-number';
+        lineNumberDiv.innerText = line.hasMatched || line.hasRemoved || line.hasAdded ? lineNumber : '';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'line-content';
+
+        line.parts.forEach(part => {
+            const span = document.createElement('span');
+            span.className = part.className;
+            span.innerText = part.text;
+            contentDiv.appendChild(span);
+        });
+
+        if (contentDiv.innerText === '') {
+            const br = document.createElement('br');
+            contentDiv.appendChild(br);
+        }
+
+        const backgroundClass = line.determineBackgroundClass();
+        if (backgroundClass) {
+            contentDiv.classList.add(backgroundClass);
+        }
+
+        lineDiv.appendChild(lineNumberDiv);
+        lineDiv.appendChild(contentDiv);
+        container.appendChild(lineDiv);
+
+        // Return the rendered height of the line
+        return lineDiv.offsetHeight;
+    }
+
+    renderEmptyLine(container) {
+        const lineDiv = document.createElement('div');
+        lineDiv.className = 'line-container';
+
+        const lineNumberDiv = document.createElement('div');
+        lineNumberDiv.className = 'line-number';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'line-content empty-line-added';
+        contentDiv.innerHTML = '<br>';
+
+        lineDiv.appendChild(lineNumberDiv);
+        lineDiv.appendChild(contentDiv);
+        container.appendChild(lineDiv);
+        return lineDiv.offsetHeight;
     }
 }
 
