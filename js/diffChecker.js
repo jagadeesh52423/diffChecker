@@ -26,7 +26,7 @@ class Line {
 
     render(container) {
         const lineDiv = document.createElement('div');
-        
+
         this.parts.forEach(part => {
             const span = document.createElement('span');
             span.className = part.className;
@@ -35,11 +35,10 @@ class Line {
         });
 
         if (lineDiv.innerText === '' && this.type === 'content') {
-            // lineDiv.removeChild(lineDiv.firstChild);
             const br = document.createElement('br');
             lineDiv.appendChild(br);  // Insert a <br> tag for empty lines
         }
-        
+
         const backgroundClass = this.determineBackgroundClass();
         if (backgroundClass) {
             lineDiv.classList.add(backgroundClass);
@@ -60,6 +59,9 @@ class Line {
         } else if (this.hasRemoved) {
             return 'line-removed-matched';
         } else {
+            if (this.parts.length === 0) {
+                return 'empty-line-added';
+            }
             return ''; // Default, no special background
         }
     }
