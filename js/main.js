@@ -27,6 +27,12 @@ function initializeDiffChecker() {
     compareButton.addEventListener('click', () => {
         const originalText = document.getElementById('original').value;
         const updatedText = document.getElementById('updated').value;
+
+        if (originalText === '' || updatedText === '') {
+            alert('Please enter both original and updated text before comparing.');
+            return;
+        }
+
         const comparisonType = document.querySelector('#comparisonType .toggle-button.active').dataset.value;
         const windowType = document.querySelector('#windowType .toggle-button.active').dataset.value;
 

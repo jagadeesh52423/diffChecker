@@ -32,24 +32,9 @@ h1 {
   font-size: 2.5em;
 }
 
-.input-section div {
-    display: flex;
-    flex-direction: column;
-    width: 48%;
-}
-
-#load-original, #load-updated {
-    margin-top: 10px;
-    padding: 5px 10px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#load-original:hover, #load-updated:hover {
-    background-color: #e0e0e0;
+h2 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
 }
 
 .input-section {
@@ -58,8 +43,12 @@ h1 {
   margin-bottom: 20px;
 }
 
-.file-drop-zone {
+.input-column {
   width: 48%;
+}
+
+.file-drop-zone {
+  width: 100%;
   height: 100px;
   border: 2px dashed var(--border-color);
   border-radius: 5px;
@@ -68,6 +57,7 @@ h1 {
   align-items: center;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-bottom: 10px;
 }
 
 .file-drop-zone:hover {
@@ -82,7 +72,7 @@ h1 {
 textarea {
   width: 100%;
   height: 200px;
-  margin: 10px 0;
+  margin-bottom: 10px;
   padding: 15px;
   font-size: 14px;
   border: 1px solid var(--border-color);
@@ -91,11 +81,34 @@ textarea {
   font-family: 'Roboto Mono', monospace;
 }
 
+.load-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.load-button:hover {
+  background-color: #e0e0e0;
+}
+
 .options {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.option-group {
+  display: flex;
+  align-items: center;
+}
+
+.option-group label {
+  margin-right: 10px;
 }
 
 .toggle-group {
@@ -368,5 +381,29 @@ body.dark-mode .file-drop-zone:hover {
 
   .diff-counts span {
     margin-bottom: 5px;
+  }
+}
+
+@media (max-width: 768px) {
+  .input-section {
+    flex-direction: column;
+  }
+
+  .input-column {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .option-group {
+    margin-bottom: 10px;
+  }
+
+  .compare-button {
+    width: 100%;
   }
 }

@@ -12,33 +12,41 @@
         <h1>Diff Checker</h1>
 
         <div class="input-section">
-            <div>
+            <div class="input-column">
+                <h2>Original Text</h2>
                 <div id="original-drop-zone" class="file-drop-zone">
                     <p>Drop original file here or click to upload</p>
                     <input type="file" id="originalFile" style="display: none;">
                 </div>
                 <textarea id="original" placeholder="Enter original text"></textarea>
-                <button id="load-original">Load Last Original File</button>
+                <button id="load-original" class="load-button">Load Last Original File</button>
             </div>
-            <div>
+            <div class="input-column">
+                <h2>Updated Text</h2>
                 <div id="updated-drop-zone" class="file-drop-zone">
                     <p>Drop updated file here or click to upload</p>
                     <input type="file" id="updatedFile" style="display: none;">
                 </div>
                 <textarea id="updated" placeholder="Enter updated text"></textarea>
-                <button id="load-updated">Load Last Updated File</button>
+                <button id="load-updated" class="load-button">Load Last Updated File</button>
             </div>
         </div>
 
         <div class="options">
-            <div class="toggle-group" id="comparisonType">
-                <button class="toggle-button active" data-value="word">Word</button>
-                <button class="toggle-button" data-value="character">Character</button>
-                <button class="toggle-button" data-value="line">Line</button>
+            <div class="option-group">
+                <label>Comparison Type:</label>
+                <div class="toggle-group" id="comparisonType">
+                    <button class="toggle-button active" data-value="word">Word</button>
+                    <button class="toggle-button" data-value="character">Character</button>
+                    <button class="toggle-button" data-value="line">Line</button>
+                </div>
             </div>
-            <div class="toggle-group" id="windowType">
-                <button class="toggle-button active" data-value="SplitWindow">Split</button>
-                <button class="toggle-button" data-value="CombinedWindow">Combined</button>
+            <div class="option-group">
+                <label>Window Type:</label>
+                <div class="toggle-group" id="windowType">
+                    <button class="toggle-button active" data-value="SplitWindow">Split</button>
+                    <button class="toggle-button" data-value="CombinedWindow">Combined</button>
+                </div>
             </div>
             <button id="compare" class="compare-button">Compare</button>
         </div>
